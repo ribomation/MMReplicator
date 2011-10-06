@@ -1,0 +1,134 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ================================================= -->
+    <!-- INFO -->
+    <!-- ================================================= -->
+    <name>MMReplicator</name>
+    <description>
+        A CA-Wily Introscope server web plugin, that can replicate Introscope
+        management modules.
+    </description>
+    <inceptionYear>2010</inceptionYear>
+    <url>http://blog.ribomation.com/introscope/mm-replicator</url>
+
+
+    <!-- ================================================= -->
+    <!-- MAVEN ID -->
+    <!-- ================================================= -->
+    <groupId>ribomation</groupId>
+    <artifactId>mmreplicator</artifactId>
+    <packaging>war</packaging>
+    <version>2.1</version>
+
+    
+    <!-- ================================================= -->
+    <!-- DEVELOPERS -->
+    <!-- ================================================= -->
+    <developers>
+        <developer>
+            <id>jens</id>
+            <name>Jens Riboe</name>
+            <email>jens.riboe@ribomation.com</email>
+            <url>http://blog.ribomation.com/</url>
+            <organization>Ribomation</organization>
+            <organizationUrl>http://www.ribomation.com/</organizationUrl>
+            <roles>
+                <role>CA-Wily Consultant</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
+
+    <!-- ================================================= -->
+    <!-- DEPENDENCIES -->
+    <!-- ================================================= -->
+
+    <repositories>
+        <repository>
+            <id>codehaus</id>
+            <url>http://repository.codehaus.org/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>1.8.2</version>
+        </dependency>
+    </dependencies>
+
+    
+    <!-- ================================================= -->
+    <!-- URLs -->
+    <!-- ================================================= -->
+    <scm>
+        <url>https://github.com/ribomation/${project.name}</url>
+        <connection>scm:git@github.com:ribomation/${project.name}.git</connection>
+        <developerConnection>scm:git@github.com:ribomation/${project.name}.git</developerConnection>
+    </scm>
+    <distributionManagement>
+        <site>
+            <id>ribomation</id>
+            <url>scp://lib.ribomation.com/docs/${project.name}/</url>
+        </site>
+    </distributionManagement>
+
+    
+    <!-- ================================================= -->
+    <!-- BUILD -->
+    <!-- ================================================= -->
+    <properties>
+        <javaVersion>1.5</javaVersion>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <finalName>mmreplicator</finalName>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.2.1</version>
+                <configuration>
+                    <finalName>${project.name}-${project.version}</finalName>
+                    <descriptors>
+                        <descriptor>src/assembly/bin.xml</descriptor>
+                        <descriptor>src/assembly/doc.xml</descriptor>
+                        <descriptor>src/assembly/src.xml</descriptor>
+                    </descriptors>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.0</version>
+                <configuration>
+                    <reportPlugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-project-info-reports-plugin</artifactId>
+                            <version>2.4</version>
+                            <reportSets>
+                                <reportSet>
+                                    <reports>
+                                        <report>summary</report>
+                                        <report>project-team</report>
+                                        <report>dependencies</report>
+                                        <report>plugins</report>
+                                        <report>scm</report>
+                                    </reports>
+                                </reportSet>
+                            </reportSets>
+                        </plugin>
+                    </reportPlugins>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -1,0 +1,101 @@
+<h2>Overview</h2>
+<p>
+    The MM Replicator creates a new ManagementModule based on an existing
+    template module. The template contains keywords that are substituted
+    during the creating phase.
+</p>
+<h2>Preparation of the template MM</h2>
+<p>
+    Start by creating a typical MM that works for the intended target subsystem.
+    It is strongly advised that the module do not have any dependencies to other
+    ManagementModules, because it prevents relocation of the module to another EM.
+</p>
+<p>
+    Identify which fields or sub-strings that should be replaced in a new replicated
+    module. Assign it a name and replace the text (fragment) with the name and
+    surrounded by at-signs '@'. For example, if the MM agent expression should be
+    replaceable. The contents of this field in the MM Editor of the template should
+    then contain the string<br/>
+    <tt>@AGENTEXPR@</tt>
+</p>
+<p>
+    Save the template MM JAR file with filename that ends in <tt>-template.jar</tt>.
+    For example <tt>wdp000-template.jar</tt>. Each MM must have a unique name, therefor
+    in addition to the filename, the MM name must be a replaceable token as well. For
+    example <tt>@NAME@</tt>.
+</p>
+<div class="img"><img src="img/mm-name.png"/></div>
+<h2>Selection</h2>
+<p>
+    Go to the <a href="template.groovy">template selection page</a> and choose one of the
+    template MM files in the menu. If none are showing up, double-check the JAR file names
+    in the <i>EM/config/modules</i> directory.
+</p>
+<div class="img"><img src="img/template.png" width="80%"/></div>
+<h2>Preparation</h2>
+<p>
+    All @-marked keywords of the chosen template will show up in the <i>Keywords</i> form section.
+    Type in all requested substitution strings.
+</p>
+<div class="img"><img src="img/create.png" width="80%"/></div>
+<p>
+    Give the new MM a unique JAR filename and chose the destination domain, then click CREATE.
+</p>
+<h2>Creation</h2>
+<p>
+    A new MM is manufactured and its JAR file is placed in the <i>EM/deploy</i> directory of the EM.
+    This directory is scanned every minute for new MMs. If everything works as expected the new MM
+    will show up in the MM-Editor and disappear from the deploy directory.
+</p>
+<div class="img"><img src="img/substitute.png" width="80%"/></div>
+<p>
+    If the deployment fails, check the EM log and remove the MM file from the deploy directory and
+    remove the faulty MM from the MM-Editor, if it has shown up there but without any MM-Elements
+    within it.
+</p>
+<h2>Scripting</h2>
+<p>
+    It is possible to script (automate) MM creation, by invoking the substitution action directly
+    together with all the correct parameter values.
+</p>
+<h3>Mandatory URL Parameters</h3>
+<table class="help">
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td><tt>template</tt></td>
+        <td>Name of the template MM JAR file, within the <i>EM/config/modules</i> directory.</td>
+    </tr>
+    <tr>
+        <td><tt>domain</tt></td>
+        <td>Name of target domain. Use the value '<tt>none</tt>', for no domain aka SuperDomain.
+            This must be valid and defined domain within the <i>EM/config/domains.xml</i> file.
+        </td>
+    </tr>
+    <tr>
+        <td><tt>filename</tt></td>
+        <td>Name of the new MM JAR file, but without the file extension <tt>.jar</tt>.
+            This must be a unique file name within the <i>EM/config/modules</i> directory.
+        </td>
+    </tr>
+    <tr>
+        <td><tt>action</tt></td>
+        <td>For scripting, this parameter should have the value '<tt>GENERATE</tt>'.</td>
+    </tr>
+</table>
+<h3>Replacement URL Parameters</h3>
+<p>
+    Each replacement token (keyword) must be prefixed with '<tt>TOKEN_</tt>'. For example, the
+    keyword <tt>@AGENTEXPR@</tt> in the template MM, is represented by the URL parameter <tt>TOKEN_AGENTEXPR</tt>.
+</p>
+<h3>Sample invocation</h3>
+<p>
+    Here is an example, using the open source command line program <a href="http://curl.haxx.se/download.html">cURL</a>,
+    where the replacement keywords are <tt>NAME</tt> and <tt>AGENTEXPR</tt>.
+</p>
+<pre>
+\$ curl 'http://localhost:8081/mmreplicator/substitute.groovy?template=wdp-template.jar&domain=none&filename=foobar&action=GENERATE&TOKEN_NAME=FooBar&TOKEN_AGENTEXPR=.*foo.*'
+Created /opt/Introscope/Introscope-8.2.2.0/EM/deploy/test2.jar
+</pre>

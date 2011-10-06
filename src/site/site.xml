@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="MM Replicator">
+    <publishDate position="left"/>
+    <version position="left"/>
+    <body>
+        <links>
+            <item name="MM Replicator" href="http://www.blog.ribomation.com/introscope/mm-replicator/"/>
+            <item name="Site" href="http://www.lib.ribomation.com/docs/mm-replicator/"/>
+            <item name="GitHub" href="https://www.github.com/ribomation/MMReplicator/"/>
+            <item name="Jens Riboe's blog" href="http://www.blog.ribomation.com/"/>
+            <item name="Ribomation" href="http://www.ribomation.com/"/>
+        </links>
+        <menu name="Info">
+            <item name="User's Guide"       href="index.html"/>
+        </menu>
+        <menu ref="reports" />
+    </body>
+</project>

@@ -1,0 +1,132 @@
+MM Replicator
+
+    A CA-Wily Introscope server web plugin, that can replicate Introscope
+    management modules.
+
+Requirements
+
+    This webapp is an server-side plug-in for CA-Wily Introscope. Introscope is a commercial tool for
+    application performance management (APM) of (large) Java applications in production. In order to use
+    and/or compile this library you need to have a valid Introscope license.
+
+    This webapp has been developed and tested using Introscope version 8.
+
+    * Java 5+
+
+    * Introscope Server (EM) installed
+
+Installation
+
+    Unpack the distribution ZIP and drop the (mmreplicator.war) WAR file into the
+    $INTROSCOPE_SERVER/webapps/ directory. Within a minute or so, it will be deployed
+    to the embedded Jetty of the EM. It can then be accessed using the URL
+
+    http://MyIntroscopeHost:8081/mmreplicator
+
+    Assuming the embedded Jetty is deployed using the standard port 8081.
+
+Usage
+
+    Steps for replication are
+
+    * Create and prepare a template management module, with keywords (@KEYWORD@).
+
+    * Browse to the Replicator webapp (http://MyIntroscopeHost:8081/mmreplicator).
+
+    * Choose a template MM.
+
+    * Give the new MM a unique name and give values for all keywords.
+
+    * Generate it and within a minute the new MM will be deployed to the Introscope server.
+
+    It is also possible to script the actions, using tool such cURL (http://curl.haxx.se/)
+
+* Preparation of the template MM
+
+    Start by creating a typical MM that works for the intended target subsystem. It is
+    strongly advised that the module do not have any dependencies to other ManagementModules,
+    because it prevents relocation of the module to another EM.
+
+    Identify which fields or sub-strings that should be replaced in a new replicated module.
+    Assign it a name and replace the text (fragment) with the name and surrounded by at-signs '@'.
+    For example, if the MM agent expression should be replaceable. The contents of this field
+    in the MM Editor of the template should then contain the string @AGENTEXPR@
+
+    Save the template MM JAR file with filename that ends in <<<-template.jar>>>. For example
+    foobar-template.jar. Each MM must have a unique name, therefor in addition to the filename,
+    the MM name must be a replaceable token as well. For example @NAME@.
+
+[images/mm-name.png] Setting a template MM name and agent expression
+
+* Selection of the template MM
+
+    Go to the template selection page and choose one of the template MM files in the menu.
+    If none are showing up, double-check the JAR file names in the EM/config/modules directory.
+
+[images/template.png] Choosing a MM template to use
+
+* Keyword substitution
+
+    All @-marked keywords of the chosen template will show up in the Keywords form section.
+    Type in all requested substitution strings.
+
+    Give the new MM a unique JAR filename and chose the destination domain, then click CREATE.
+
+[images/create.png] Filling in the keywords with values
+
+* MM Generation
+
+    A new MM is manufactured and its JAR file is placed in the EM/deploy directory of the EM.
+    This directory is scanned every minute for new MMs. If everything works as expected the new
+    MM will show up in the MM-Editor and disappear from the deploy directory.
+
+    If the deployment fails, check the EM log and remove the MM file from the deploy directory
+    and remove the faulty MM from the MM-Editor, if it has shown up there but without any
+    MM-Elements within it.
+
+[images/substitute.png] A new MM have been created
+
+Scripting
+
+    It is possible to script (automate) MM creation, by invoking the substitution action directly
+    together with all the correct parameter values.
+
+* Mandatory URL Parameters
+
+*----------------+-----------+------------
+| <<Name>>       | <<Description>>
+*----------------+-----------+------------
+| <<<template>>> | Name of the template MM JAR file, within the EM/config/modules directory.
+*----------------+-----------+------------
+| <<<domain>>>   | Name of target domain. Use the value 'none', for no domain aka SuperDomain. This must be valid and defined domain within the EM/config/domains.xml file.
+*----------------+-----------+------------
+| <<<filename>>> | Name of the new MM JAR file, but without the file extension .jar. This must be a unique file name within the EM/config/modules directory.
+*----------------+-----------+------------
+| <<<action>>>   | For scripting, this parameter should have the value 'GENERATE'.
+*----------------+-----------+------------
+
+* Replacement URL Parameters
+
+    Each replacement token (keyword) must be prefixed with 'TOKEN_'. For example, the keyword
+    @AGENTEXPR@ in the template MM, is represented by the URL parameter TOKEN_AGENTEXPR.
+
+* Sample invocation
+
+    Here is an example, using the open source command line program {{{http://curl.haxx.se/}cURL}},
+    where the replacement keywords are NAME and AGENTEXPR.
+
++---
+$ curl 'http://localhost:8081/mmreplicator/substitute.groovy?template=wdp-template.jar&domain=none&filename=foobar&action=GENERATE&TOKEN_NAME=FooBar&TOKEN_AGENTEXPR=.*foo.*'
+Created /opt/Introscope/Introscope-8.2.2.0/EM/deploy/test2.jar
++---
+
+Author
+
+*-----------+--------------------------------------------------------------------+
+|| Name     | Jens Riboe                                                         |
+*-----------+--------------------------------------------------------------------+
+|| Email    | {{{mailto:jens.riboe@ribomation.com}jens.riboe@ribomation.com}}    |
+*-----------+--------------------------------------------------------------------+
+|| Web      | {{http://blog.ribomation.com/introscope/mm-replicator}}        |
+*-----------+--------------------------------------------------------------------+
+
